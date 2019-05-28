@@ -22,7 +22,7 @@ else
  sudo apt-get -y install -f
  echo "MySQL broken packages fix"
 fi
-
+sudo apt-get -y install -f
 
 if sudo apt-get -y install mysql-server-5.7
 then
@@ -31,7 +31,7 @@ else
  sudo apt-get -y install -f
  echo "MySQL broken packages fix"
 fi
-
+sudo apt-get -y install -f
 #mysql -u root -p root -e "use mysql; UPDATE user SET authentication_string=PASSWORD('$MYSQLPASSWORD') WHERE User='root'; flush privileges;" >> $LOGFILE 2>&1
 
 
