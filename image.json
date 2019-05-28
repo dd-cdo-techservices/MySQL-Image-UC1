@@ -1,0 +1,103 @@
+{
+    "variables": {
+        "region":         "us-east-1",
+                "aws_subnet_id": "subnet-0f4b8f8db598eaf21",
+        "aws_vpc_id": "vpc-00e2284bbb39d5a29",
+        "aws_ami_name": "uc-one-MySQLUB-{{timestamp}}"
+    },
+    "builders": [
+        {
+            "ami_name": "{{user `aws_ami_name`}}",   
+   "instance_type": "t2.micro",
+            "region": "us-east-1",
+         
+		"source_ami_filter": {
+   "filters": {
+     "virtualization-type": "hvm",
+     "name": "ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*",
+     "root-device-type": "ebs"
+    },
+    "owners": [
+     "099720109477"
+    ],
+    "most_recent": true
+   },
+		 "encrypt_boot": true,
+	  "kms_key_id": "arn:aws:kms:us-east-1:034644439020:key/44af12df-17de-4cdc-9ede-bd5c8b125fb3",
+	            "vpc_id": "{{user `aws_vpc_id`}}",
+            "subnet_id": "{{user `aws_subnet_id`}}",
+                        "associate_public_ip_address": "true",
+            "ssh_username": "ubuntu",
+            "type": "amazon-ebs",
+                        "communicator": "ssh",
+		"tags": {
+        "OS_Version": "Ubuntu",
+        "Name": "uc-one-MySQLUB"
+      },
+	"run_tags" : {
+        "OS_Version": "Ubuntu",
+        "Name": "uc-one-MySQLUB"
+      }
+        }
+    ],
+   "provisioners": [
+{
+		"type": "shell",
+		"script": "source.sh"  
+	   },
+	   
+	   {
+  "type": "file",
+  "source": "id_rsa.pub",
+  "destination": "/tmp/id_rsa.pub"
+},
+{
+  "type": "shell",
+  "inline": "sudo cp /tmp/id_rsa.pub /home/ubuntu/.ssh/authorized_keys"
+},
+
+ {
+	 "type": "shell",
+	 
+"execute_command": "{{.Vars}} sudo -E -S bash '{{.Path}}'",
+            "scripts": [
+                "sshfile.sh"
+            ]	   
+},	   
+	   
+ 
+{
+  "type": "shell",
+  "inline": "sudo systemctl restart sshd"
+},
+
+  {
+      "type": "shell",
+      "inline": "sudo apt-get install python -y"
+      
+    },
+	
+{
+      "type": "shell",
+      "inline": "sudo apt-get update -y"
+},
+
+ {
+      "type": "shell",
+      "script": "mysql.sh"
+      
+    },
+	
+	{
+      "type": "shell",
+      "script": "createDB.sh"
+      
+    },
+	
+	 {
+      "type": "shell",
+      "script": "mysqlconf.sh"
+      
+    }
+	]
+}
