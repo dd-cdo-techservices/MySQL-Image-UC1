@@ -41,10 +41,6 @@
         }
     ],
    "provisioners": [
-{
-		"type": "shell",
-		"script": "source.sh"  
-	   },
 	   
 	   {
   "type": "file",
