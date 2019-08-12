@@ -22,12 +22,6 @@ pipeline {
 	      cleanWs()
       }
     }
-	  
-stage 'post-build'
-{
-build job: 'Oneclk_PF_Imgbuild_ST2'
-}
-	  
-	  
+	  	  
   }
 }
